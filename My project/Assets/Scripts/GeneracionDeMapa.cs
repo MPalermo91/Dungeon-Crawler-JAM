@@ -12,19 +12,39 @@ public class GeneracionDeMapa : MonoBehaviour
 
     public Vector2 size;
     public int startPos = 0;
+    public GameObject room;
+    public Vector2 offset;
 
     List<Cell> board;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        MazeGenerator();
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    void GenerateDungeon()
+    {
+        for (int i = 0; i < size.x; i++)
+        {
+            for (int j = 0; j < size.y; j++)
+            {
+                Cell currentCell = board[Mathf.FloorToInt(i+j*size.x)];
+                if (currentCell.visited)
+                {
+                    var newRoom = Instantiate(room, new Vector3(i*offset.x, 0, -j*offset.y), Quaternion.identity, transform).GetComponent<Habitaciones>();
+                    newRoom.UpdateRoom(currentCell.status);
+                
+                    newRoom.name += " " + i + "-" + j;  
+                }
+            }
+        }
     }
 
 
@@ -51,6 +71,11 @@ public class GeneracionDeMapa : MonoBehaviour
             k++;
 
             board[currentCell].visited = true;
+
+            if(currentCell == board.Count - 1)
+            {
+                break;
+            }
 
             //check the cell´s neightbors
             List<int> neighbors = CheckNeighbors(currentCell);
@@ -107,6 +132,7 @@ public class GeneracionDeMapa : MonoBehaviour
                 }
             }
         }
+        GenerateDungeon();
     }
 
     List<int> CheckNeighbors(int cell)
