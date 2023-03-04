@@ -5,8 +5,9 @@ using UnityEngine;
 public class movimientoJugador : MonoBehaviour
 {
     public bool movimientoInstantaneo, estaRotando, estaCaminando;
-    public float velocidadRotacion, velocidadMovimiento, tiempoRotacion, anguloRotacion, distanciaMovimiento;
-    public Transform posicionFinal;
+    public float velocidadRotacion = 350f, velocidadMovimiento, anguloRotacion, distanciaMovimiento;
+    public movimientoWallcheck posicionFinal;
+    public contadorDePasos contadorPasos;
 public float intervalo = 0.02f; // intervalo de tiempo entre movimientos
 
 
@@ -14,24 +15,35 @@ public float intervalo = 0.02f; // intervalo de tiempo entre movimientos
     void Start()
     {
         movimientoInstantaneo = false;
+        GameObject go = GameObject.Find("ContadorDePasos");
+        contadorPasos = (contadorDePasos) go.GetComponent(typeof(contadorDePasos));
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("w") && !estaCaminando)
+        if (Input.GetKeyDown("w") && !estaCaminando && posicionFinal.puedeCaminar)
         {
-            if(movimientoInstantaneo)
+            contadorPasos.pasosActuales++;
+            if(posicionFinal.siguienteMovimientoAtaca)
             {
-                transform.Translate(Vector3.forward * distanciaMovimiento);
+                posicionFinal.siguienteMovimientoAtaca = false;
+                Destroy(posicionFinal.enemigo);
             }
             else
             {
-                StartCoroutine(MoverJugador());
+                if(movimientoInstantaneo)
+                {
+                    transform.Translate(Vector3.forward * distanciaMovimiento);
+                }
+                else
+                {
+                    StartCoroutine(MoverJugador());
+                }
             }
-            print("Me muevo adelante, pa");
+            
         }
-        if (Input.GetKeyDown("a") && !estaRotando)
+        if (Input.GetKeyDown("a") && !estaRotando && !estaCaminando)
         {
             if(movimientoInstantaneo)
             {
@@ -43,7 +55,7 @@ public float intervalo = 0.02f; // intervalo de tiempo entre movimientos
                 StartCoroutine(RotarJugador(-90));
             }
         }
-        if (Input.GetKeyDown("d") && !estaRotando)
+        if (Input.GetKeyDown("d") && !estaRotando && !estaCaminando)
         {
             if(movimientoInstantaneo)
             {
@@ -75,9 +87,7 @@ public float intervalo = 0.02f; // intervalo de tiempo entre movimientos
     if (anguloObjetivo < 0) {
         anguloObjetivo += 360; //asegura que el ángulo esté en el rango [0, 360) grados, por que de lo contrario se rompe el while de abajo
     }
-    print("Angulo objetivo:"+anguloObjetivo);
     float tolerancia = 10f;
-    velocidadRotacion = 350f;
     while (Mathf.Abs(transform.eulerAngles.y - anguloObjetivo) > tolerancia) 
     { //mientras el objeto no haya alcanzado el ángulo final de rotación
     //print(Mathf.Abs(transform.eulerAngles.y - anguloObjetivo));
@@ -87,5 +97,5 @@ public float intervalo = 0.02f; // intervalo de tiempo entre movimientos
     transform.rotation = Quaternion.Euler(0, anguloObjetivo, 0);
     estaRotando = false; //el objeto ha terminado de girar
     yield return null; //espera al siguiente frame
-}
+    }
 }
