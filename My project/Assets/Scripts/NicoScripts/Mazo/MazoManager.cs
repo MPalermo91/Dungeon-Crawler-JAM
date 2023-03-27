@@ -30,23 +30,17 @@
     {
 
         mazoGuardado = new List<Sprite>(imazo);
-        mazoGuardado = Barajar();
+        //mazoGuardado = Barajar();
     }
 
     public List<Sprite> Get_Mazo()
     {
         List<Sprite> mazoBarajado = new List<Sprite>(mazoGuardado);
-        
-        
         return new List<Sprite>(mazoBarajado);
     }
 
     private List<Sprite> Barajar()
     {  
-        //var size : int = data.length;
-        //mazoGuardado.Count
-
-
         for (int i = 0; i < mazoGuardado.Count; i++)
         {
             int indexToSwap = Random.Range(i, mazoGuardado.Count);
@@ -54,10 +48,36 @@
             mazoGuardado[i] = mazoGuardado[indexToSwap];
             mazoGuardado[indexToSwap] = oldValue;
         }
-
         return mazoGuardado;
-        
     }
+
+
+    //Control de cartas, para las listas
+    [SerializeField] int numeroDeCarta = 0;
+    [SerializeField] Sprite spriteActual;
+
+     public void ContadorDeCartas()
+     {
+        if(numeroDeCarta == 0)
+        {
+            mazoGuardado = Barajar();
+        }
+        else if (numeroDeCarta >= mazoGuardado.Count)
+        {
+            numeroDeCarta = 0;
+            mazoGuardado = Barajar();
+        }
+        spriteActual = mazoGuardado[numeroDeCarta];
+        numeroDeCarta++;
+     }
+
+     public Sprite Get_SpriteActual()
+     {
+        return spriteActual;
+     }
+
+    //Recordatorio: me quede en la parte de los mazos y el generador de cartas (tambien falta el daño y demas)
+
 
 
 /*function ShuffleT$$anonymous$$s(data : Array) : Array

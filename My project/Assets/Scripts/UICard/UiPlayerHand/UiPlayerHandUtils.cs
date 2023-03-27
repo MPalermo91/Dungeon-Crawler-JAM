@@ -66,26 +66,41 @@ namespace Tools.UI.Card
                 PlayerHand.AddCard(card);
                 SistemaDeTurnos.Instance.Set_AgarrarCartaFalse();
             }
+
+            
+        }
+
+        public void DrawCardEnemigo()
+        {
+                //TODO: Consider replace Instantiate by an Object Pool Pattern
+                var cardGo = Instantiate(cardPrefabCs, gameView);
+                cardGo.name = "Card_" + Count;
+                var card = cardGo.GetComponent<IUiCard>();
+                card.transform.position = deckPosition.position;
+                Count++;
+                PlayerHand.AddCard(card);
             
         }
         //Esta funcion seguramente desaparezca porque agarra cartas randoms
+        [SerializeField] bool isPlayer;
         [Button]
         public void PlayCard()
         {
-            if (PlayerHand.Cards.Count > 0)
+            if (PlayerHand.Cards.Count > 0 && !isPlayer)
             {
                 var randomCard = PlayerHand.Cards.RandomItem();
                 PlayerHand.PlayCard(randomCard);
             }
+            
         }
 
-        void Update()
+        /*void Update()
         {
             //Esto hay que cambiarlo
             if (Input.GetKeyDown(KeyCode.Tab)) DrawCard();
             if (Input.GetKeyDown(KeyCode.Space)) PlayCard();
             if (Input.GetKeyDown(KeyCode.Escape)) Restart();
-        }
+        }*/
 
         public void Restart() => SceneManager.LoadScene(0);
 

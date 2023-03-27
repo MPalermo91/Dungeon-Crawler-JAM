@@ -15,7 +15,15 @@ namespace Tools.UI.Card
             Input = GetComponent<IMouseInput>();
             Input.OnPointerClick += DrawCard;
         }
-
-        void DrawCard(PointerEventData obj) => CardDrawer.DrawCard();
+        [SerializeField] bool isPlayer;
+        void DrawCard(PointerEventData obj) 
+        {
+            if (isPlayer)
+            {
+                CardDrawer.DrawCard();
+            }
+        }
     }
+
+    
 }

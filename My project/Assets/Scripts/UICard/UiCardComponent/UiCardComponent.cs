@@ -31,6 +31,7 @@ namespace Tools.UI.Card
 
             //fsm
             Fsm = new UiCardHandFsm(MainCamera, cardConfigsParameters, this);
+            
         }
 
         void Update()
@@ -86,6 +87,8 @@ namespace Tools.UI.Card
         public bool IsDisabled => Fsm.IsCurrent<UiCardDisable>();
         public bool IsPlayer => transform.CloserEdge(MainCamera, Screen.width, Screen.height) == 1;
 
+        public int daño;
+
         #endregion
 
         //--------------------------------------------------------------------------------------------------------------
@@ -128,7 +131,22 @@ namespace Tools.UI.Card
 
         public void Draw() => Fsm.Draw();
 
-        public void Discard() => Fsm.Discard();
+        public void Discard()
+        {
+            SistemaDeTurnos.Instance.DañoAlEnemigo(this.gameObject);
+            Fsm.Discard();
+            
+        }  
+
+        public void Set_Daño(int nuevoDaño)
+        {
+            daño = nuevoDaño;
+        }
+
+        public int Get_Daño()
+        {
+            return daño;
+        }
 
         #endregion
 
